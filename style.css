@@ -51,11 +51,17 @@ body {
   transform: rotateY(180deg);
   background: #111;
   color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
-  overflow-y: auto;
   font-size: 12px;
   line-height: 1.4;
+  height: 100%;
+  box-sizing: border-box;
 }
+
 
 .card-back h4 {
   margin: 0 0 10px;
