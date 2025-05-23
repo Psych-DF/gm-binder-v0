@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Clickable Flip Grid</title>
+  <title>Single Flip Grid</title>
   <style>
     body {
       margin: 0;
@@ -29,7 +29,7 @@
     .card-inner {
       position: relative;
       width: 100%;
-      padding-top: 100%; /* 1:1 aspect ratio */
+      padding-top: 100%; /* 1:1 ratio */
       transform-style: preserve-3d;
       transition: transform 0.6s;
     }
@@ -47,21 +47,14 @@
       overflow: hidden;
     }
 
-    .card-front img {
+    .card-front img, .card-back img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
     .card-back {
-      background: #333;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       transform: rotateY(180deg);
-      padding: 10px;
-      text-align: center;
     }
   </style>
 </head>
@@ -71,27 +64,36 @@
     <div class="card">
       <div class="card-inner">
         <div class="card-front">
-          <img src="https://picsum.photos/200?random=1" alt="Card 1">
+          <img src="https://picsum.photos/300?random=1" alt="Front 1">
         </div>
-        <div class="card-back">Card 1 Details</div>
+        <div class="card-back">
+          <img src="https://picsum.photos/300?random=11" alt="Back 1">
+        </div>
       </div>
     </div>
 
     <div class="card">
       <div class="card-inner">
         <div class="card-front">
-          <img src="https://picsum.photos/200?random=2" alt="Card 2">
+          <img src="https://picsum.photos/300?random=2" alt="Front 2">
         </div>
-        <div class="card-back">Card 2 Info</div>
+        <div class="card-back">
+          <img src="https://picsum.photos/300?random=12" alt="Back 2">
+        </div>
       </div>
     </div>
 
-    <!-- Add more cards as needed -->
+    <!-- Add more cards here -->
   </div>
 
   <script>
-    document.querySelectorAll('.card').forEach(card => {
+    const cards = document.querySelectorAll('.card');
+
+    cards.forEach(card => {
       card.addEventListener('click', () => {
+        cards.forEach(c => {
+          if (c !== card) c.classList.remove('flipped');
+        });
         card.classList.toggle('flipped');
       });
     });
