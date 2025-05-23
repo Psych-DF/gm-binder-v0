@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Image Flip Grid</title>
+  <title>Image Flip Grid with Metadata</title>
   <style>
     body {
       margin: 0;
       padding: 20px;
-      background: #000000;
+      background: #000;
       font-family: sans-serif;
       display: flex;
       justify-content: center;
@@ -48,7 +48,7 @@
       overflow: hidden;
     }
 
-    .card-front img, .card-back img {
+    .card-front img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -56,6 +56,21 @@
 
     .card-back {
       transform: rotateY(180deg);
+      background: #111;
+      color: #fff;
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .card-back h4 {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+
+    .card-back .attr {
+      margin-bottom: 4px;
     }
   </style>
 </head>
@@ -64,38 +79,56 @@
   <div class="grid" id="grid"></div>
 
   <script>
-    const imageCount = 20; // Adjust this number based on how many images you have
+    const imageCount = 20; // Adjust this number to match your total image/json files
     const grid = document.getElementById('grid');
 
-    for (let i = 1; i <= imageCount; i++) {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="card-inner">
-          <div class="card-front">
-            <img src="output/${i}.png" alt="Front ${i}">
+    async function loadCards() {
+      for (let i = 1; i <= imageCount; i++) {
+        let jsonData = null;
+
+        try {
+          const res = await fetch(`output/${i}.json`);
+          if (!res.ok) throw new Error(`Missing JSON for ${i}`);
+          jsonData = await res.json();
+        } catch (err) {
+          console.warn(`Could not load JSON for card ${i}:`, err.message);
+        }
+
+        // Build metadata HTML
+        let backHTML = `<div class="card-back"><h4>${jsonData?.name || `Card ${i}`}</h4>`;
+
+        if (jsonData?.attributes) {
+          backHTML += jsonData.attributes.map(attr =>
+            `<div class="attr"><strong>${attr.trait_type.toUpperCase()}</strong>: ${attr.value}</div>`
+          ).join('');
+        } else {
+          backHTML += `<em>No metadata found.</em>`;
+        }
+
+        backHTML += `</div>`;
+
+        // Create card element
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="output/${i}.png" alt="Card ${i}">
+            </div>
+            ${backHTML}
           </div>
-          <div class="card-back">
-            <img src="output/${i}.png" alt="Back ${i}">
-          </div>
-        </div>
-      `;
-      grid.appendChild(card);
+        `;
+        grid.appendChild(card);
+      }
+
+      // Flip logic: only one flipped at a time
+      document.addEventListener('click', function (event) {
+        const clickedCard = event.target.closest('.card');
+        document.querySelectorAll('.card').forEach(card => {
+          if (card !== clickedCard) card.classList.remove('flipped');
+        });
+        if (clickedCard) clickedCard.classList.toggle('flipped');
+      });
     }
 
-    // Flip logic: only one flipped at a time
-    document.addEventListener('click', function (event) {
-      const clickedCard = event.target.closest('.card');
-      document.querySelectorAll('.card').forEach(card => {
-        if (card !== clickedCard) {
-          card.classList.remove('flipped');
-        }
-      });
-      if (clickedCard) {
-        clickedCard.classList.toggle('flipped');
-      }
-    });
-  </script>
-
-</body>
-</html>
+    loadCards();
