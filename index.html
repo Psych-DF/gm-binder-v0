@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Single Flip Grid</title>
+  <title>Image Flip Grid</title>
   <style>
     body {
       margin: 0;
@@ -18,7 +18,8 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 20px;
-      max-width: 900px;
+      max-width: 1000px;
+      width: 100%;
     }
 
     .card {
@@ -29,7 +30,7 @@
     .card-inner {
       position: relative;
       width: 100%;
-      padding-top: 100%; /* 1:1 ratio */
+      padding-top: 100%; /* 1:1 aspect ratio */
       transform-style: preserve-3d;
       transition: transform 0.6s;
     }
@@ -60,42 +61,39 @@
 </head>
 <body>
 
-  <div class="grid">
-    <div class="card">
-      <div class="card-inner">
-        <div class="card-front">
-          <img src="https://picsum.photos/300?random=1" alt="Front 1">
-        </div>
-        <div class="card-back">
-          <img src="https://picsum.photos/300?random=11" alt="Back 1">
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-inner">
-        <div class="card-front">
-          <img src="https://picsum.photos/300?random=2" alt="Front 2">
-        </div>
-        <div class="card-back">
-          <img src="https://picsum.photos/300?random=12" alt="Back 2">
-        </div>
-      </div>
-    </div>
-
-    <!-- Add more cards here -->
-  </div>
+  <div class="grid" id="grid"></div>
 
   <script>
-    const cards = document.querySelectorAll('.card');
+    const imageCount = 20; // Adjust this number based on how many images you have
+    const grid = document.getElementById('grid');
 
-    cards.forEach(card => {
-      card.addEventListener('click', () => {
-        cards.forEach(c => {
-          if (c !== card) c.classList.remove('flipped');
-        });
-        card.classList.toggle('flipped');
+    for (let i = 1; i <= imageCount; i++) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front">
+            <img src="output/${i}.png" alt="Front ${i}">
+          </div>
+          <div class="card-back">
+            <img src="output/${i}.png" alt="Back ${i}">
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    }
+
+    // Flip logic: only one flipped at a time
+    document.addEventListener('click', function (event) {
+      const clickedCard = event.target.closest('.card');
+      document.querySelectorAll('.card').forEach(card => {
+        if (card !== clickedCard) {
+          card.classList.remove('flipped');
+        }
       });
+      if (clickedCard) {
+        clickedCard.classList.toggle('flipped');
+      }
     });
   </script>
 
