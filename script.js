@@ -12,15 +12,23 @@ async function loadCards() {
       const jsonData = await res.json();
 
       // Build card back with metadata
-      let backHTML = `<div class="card-back"><h4>${jsonData.name || `Card ${i}`}</h4>`;
-      if (jsonData.attributes && Array.isArray(jsonData.attributes)) {
-        backHTML += jsonData.attributes.map(attr =>
-          `<div class="attr"><strong>${attr.trait_type.toUpperCase()}</strong>: ${attr.value}</div>`
-        ).join('');
-      } else {
-        backHTML += `<em>No attributes found.</em>`;
-      }
-      backHTML += `</div>`;
+let backHTML = `<div class="card-back">
+  <h4>${jsonData.name || `Card ${i}`}</h4>`;
+
+if (jsonData.attributes && Array.isArray(jsonData.attributes)) {
+  backHTML += jsonData.attributes.map(attr =>
+    `<div class="attr"><strong>${attr.trait_type.toUpperCase()}</strong>: ${attr.value}</div>`
+  ).join('');
+} else {
+  backHTML += `<em>No attributes found.</em>`;
+}
+
+// Add Buy Now button
+backHTML += `
+  <div style="margin-top: auto; width: 100%; text-align: center;">
+    <a href="https://yoursite.com/buy/${i}" target="_blank" class="buy-button">Buy Now</a>
+  </div>
+</div>`;
 
       // Create card DOM element
       const card = document.createElement('div');
