@@ -71,3 +71,20 @@ body {
 .card-back .attr {
   margin-bottom: 4px;
 }
+
+.buy-button {
+  display: inline-block;
+  padding: 8px 16px;
+  margin-top: 10px;
+  background: #fff;
+  color: #000;
+  font-weight: bold;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.buy-button:hover {
+  background: #0f0;
+  color: #000;
+}
